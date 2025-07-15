@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Promotion {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  url         String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  affiliateId Int?
+  affiliate   Affiliate? @relation(fields: [affiliateId], references: [id])
+  schedules   Schedule[]
+  sendLogs    SendLog[]
+  approved    Boolean  @default(false)
+}
+
+model Affiliate {
+  id        Int      @id @default(autoincrement())
+  name      String
+  baseUrl   String
+  params    String?
+  platform  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  promotions Promotion[]
+}
+
+model Schedule {
+  id          Int      @id @default(autoincrement())
+  promotionId Int
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
+  chatId      String
+  cron        String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SendLog {
+  id          Int      @id @default(autoincrement())
+  promotionId Int
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
+  chatId      String
+  sentAt      DateTime @default(now())
+  status      String
+  createdAt   DateTime @default(now())
+}
