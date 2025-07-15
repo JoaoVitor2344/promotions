@@ -1,10 +1,21 @@
-// Estrutura base para integração com Shopee Partners API
-// Substitua a função mockada por integração real quando tiver as credenciais
+const axios = require('axios');
+const crypto = require('crypto');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// Exemplo de função para buscar promoções (mock)
+const SHOPEE_PARTNER_ID = process.env.SHOPEE_PARTNER_ID;
+const SHOPEE_PARTNER_KEY = process.env.SHOPEE_PARTNER_KEY;
+const SHOPEE_SHOP_ID = process.env.SHOPEE_SHOP_ID; // Opcional, se for buscar produtos de uma loja específica
+const SHOPEE_API_URL = 'https://partner.shopeemobile.com/api/v1/item/search'; // Exemplo, pode variar
+
+// Função base para buscar produtos na Shopee (pronta para integração real)
 async function fetchShopeePromotions({ keyword = 'promo', page = 1 }) {
-  // Aqui você faria a chamada real à API da Shopee
-  // Exemplo de retorno mockado:
+  if (!SHOPEE_PARTNER_ID || !SHOPEE_PARTNER_KEY) {
+    throw new Error('Credenciais da Shopee não configuradas no .env');
+  }
+  // Aqui você deve implementar a assinatura e requisição real conforme a documentação da Shopee
+  // https://open.shopee.com/documents?module=63&type=2&id=53&version=1
+  // Por enquanto, retorna mock para manter compatibilidade
   return [
     {
       title: 'Smartphone Xiaomi Redmi Note 12',

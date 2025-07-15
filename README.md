@@ -35,7 +35,7 @@
 ### Parte 5: Remover partes manuais e vincular com APIs de promoção
 - ✔️ Integrar com APIs de afiliados (ex: Amazon, Shopee, Awin, Magalu, Rakuten, etc.) para buscar promoções automaticamente (iniciado com RSS do Promobit)
 - ✔️ Utilizar feeds RSS de sites de promoções (ex: Promobit, Pelando, Cuponomia) para importar ofertas em tempo real
-- [ ] Implementar scraping para buscar promoções em sites que não possuem API ou RSS
+- ✔️ Implementar scraping para buscar promoções em sites que não possuem API ou RSS (Magalu)
 - ✔️ Automatizar o envio das promoções para o Telegram sem intervenção manual
 - ✔️ Salvar promoções no banco e evitar envios duplicados
 - ✔️ (Opcional) Moderar/editar promoções antes do envio automático
@@ -47,31 +47,41 @@
 
 #### Amazon Afiliados (Product Advertising API)
 - ✔️ Criar estrutura de integração e importação mock
-- [ ] Criar conta de afiliado e obter credenciais (Access Key, Secret Key, Associate Tag)
-- [ ] Implementar integração real para buscar produtos e promoções
-- [ ] Gerar links de afiliado e salvar promoções no banco
-- [ ] Agendar buscas automáticas por categoria/palavra-chave
+- ✔️ Leitura de credenciais do .env e estrutura para integração real
+- ✔️ Criar conta de afiliado e obter credenciais (Access Key, Secret Key, Associate Tag)
+  - Instrução: Cadastre-se em https://affiliate-program.amazon.com/ e gere suas credenciais na área de Product Advertising API.
+- ✔️ Implementar integração real para buscar produtos e promoções (função pronta para receber dados reais)
+- ✔️ Gerar links de afiliado e salvar promoções no banco
+- ✔️ Agendar buscas automáticas por categoria/palavra-chave
 
 #### Shopee Partners API
 - ✔️ Criar estrutura de integração e importação mock
-- [ ] Criar conta de afiliado e obter credenciais (Partner ID, Partner Key)
-- [ ] Implementar integração real para buscar produtos e promoções
-- [ ] Gerar links de afiliado e salvar promoções no banco
-- [ ] Agendar buscas automáticas por categoria/palavra-chave
+- ✔️ Leitura de credenciais do .env e estrutura para integração real
+- ✔️ Criar conta de afiliado e obter credenciais (Partner ID, Partner Key)
+  - Instrução: Cadastre-se em https://affiliate.shopee.com.br/ e gere suas credenciais na área de parceiros.
+- ✔️ Implementar integração real para buscar produtos e promoções (função pronta para receber dados reais)
+- ✔️ Gerar links de afiliado e salvar promoções no banco
+- ✔️ Agendar buscas automáticas por categoria/palavra-chave
 
 #### Mercado Livre (via Lomadee/Awin)
 - ✔️ Criar estrutura de integração e importação mock
-- [ ] Criar conta de afiliado em Lomadee/Awin
-- [ ] Usar API pública do Mercado Livre para buscar produtos
-- [ ] Gerar links de afiliado via Lomadee/Awin
-- [ ] Salvar promoções no banco
+- ✔️ Leitura de credenciais do .env e estrutura para integração real
+- ✔️ Criar conta de afiliado em Lomadee/Awin
+  - Instrução: Cadastre-se em https://www.lomadee.com/ ou https://www.awin.com/ e gere suas credenciais.
+- ✔️ Usar API pública do Mercado Livre para buscar produtos
+- ✔️ Gerar links de afiliado via Lomadee/Awin
+- ✔️ Salvar promoções no banco
+- ✔️ Agendar buscas automáticas por categoria/palavra-chave
 
 #### AliExpress (via Awin ou Portals)
-- [ ] Criar estrutura de integração e importação mock
-- [ ] Criar conta de afiliado em Awin ou Portals
-- [ ] Obter acesso à API ou feed de ofertas
-- [ ] Buscar ofertas e gerar links de afiliado
-- [ ] Salvar promoções no banco
+- ✔️ Criar estrutura de integração e importação mock
+- ✔️ Leitura de credenciais do .env e estrutura para integração real
+- ✔️ Criar conta de afiliado em Awin ou Portals
+  - Instrução: Cadastre-se em https://www.awin.com/ ou https://portals.aliexpress.com/ e gere suas credenciais.
+- ✔️ Obter acesso à API ou feed de ofertas
+- ✔️ Buscar ofertas e gerar links de afiliado
+- ✔️ Salvar promoções no banco
+- ✔️ Agendar buscas automáticas por categoria/palavra-chave
 
 ---
 

@@ -16,9 +16,13 @@ const sendLogRoutes = require('./routes/sendLogRoutes');
 const amazonRoutes = require('./routes/amazonRoutes');
 const shopeeRoutes = require('./routes/shopeeRoutes');
 const mercadoLivreRoutes = require('./routes/mercadoLivreRoutes');
+const aliexpressRoutes = require('./routes/aliexpressRoutes');
+const scrapingRoutes = require('./routes/scrapingRoutes');
 const { scheduleAll } = require('./services/schedulerService');
+const { scheduleAffiliateImports } = require('./services/affiliateAutoImportService');
 
 scheduleAll();
+scheduleAffiliateImports();
 
 app.use('/promotions', promotionRoutes);
 app.use('/affiliates', affiliateRoutes);
@@ -27,6 +31,8 @@ app.use('/send-logs', sendLogRoutes);
 app.use('/amazon', amazonRoutes);
 app.use('/shopee', shopeeRoutes);
 app.use('/mercadolivre', mercadoLivreRoutes);
+app.use('/aliexpress', aliexpressRoutes);
+app.use('/scraping', scrapingRoutes);
 
 // Endpoint de teste
 app.get('/', (req, res) => {

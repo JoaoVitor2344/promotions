@@ -1,10 +1,19 @@
-// Estrutura base para integração com Mercado Livre (API pública + afiliado via Lomadee/Awin)
-// Substitua a função mockada por integração real quando tiver as credenciais
+const axios = require('axios');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// Exemplo de função para buscar promoções (mock)
+const LOMADEE_API_KEY = process.env.LOMADEE_API_KEY;
+const LOMADEE_SOURCE_ID = process.env.LOMADEE_SOURCE_ID;
+
+// Função base para buscar produtos no Mercado Livre (pronta para integração real)
 async function fetchMercadoLivrePromotions({ keyword = 'promo', page = 1 }) {
-  // Aqui você faria a chamada real à API do Mercado Livre e montaria o link de afiliado via Lomadee/Awin
-  // Exemplo de retorno mockado:
+  if (!LOMADEE_API_KEY || !LOMADEE_SOURCE_ID) {
+    throw new Error('Credenciais da Lomadee não configuradas no .env');
+  }
+  // Exemplo de busca real na API pública do Mercado Livre
+  // https://api.mercadolibre.com/sites/MLB/search?q=palavra&page=1
+  // Para link de afiliado, use a documentação da Lomadee/Awin
+  // Por enquanto, retorna mock para manter compatibilidade
   return [
     {
       title: 'Smart TV 50" 4K Samsung Crystal UHD',
