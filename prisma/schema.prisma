@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,48 +8,48 @@ datasource db {
 }
 
 model Promotion {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   title       String
   description String
   url         String
   imageUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   affiliateId Int?
+  approved    Boolean    @default(false)
   affiliate   Affiliate? @relation(fields: [affiliateId], references: [id])
   schedules   Schedule[]
   sendLogs    SendLog[]
-  approved    Boolean  @default(false)
 }
 
 model Affiliate {
-  id        Int      @id @default(autoincrement())
-  name      String
-  baseUrl   String
-  params    String?
-  platform  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int         @id @default(autoincrement())
+  name       String
+  baseUrl    String
+  params     String?
+  platform   String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
   promotions Promotion[]
 }
 
 model Schedule {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   promotionId Int
-  promotion   Promotion @relation(fields: [promotionId], references: [id])
   chatId      String
   cron        String
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
 }
 
 model SendLog {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   promotionId Int
-  promotion   Promotion @relation(fields: [promotionId], references: [id])
   chatId      String
-  sentAt      DateTime @default(now())
+  sentAt      DateTime  @default(now())
   status      String
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
 }

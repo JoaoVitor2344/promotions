@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 // Configura variáveis de ambiente
 dotenv.config();
@@ -7,6 +8,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
 
 const promotionRoutes = require('./routes/promotionRoutes');
