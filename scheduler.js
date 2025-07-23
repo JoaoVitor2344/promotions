@@ -1,0 +1,1 @@
+// Ponto de entrada para INICIAR o agendador (node-cron)

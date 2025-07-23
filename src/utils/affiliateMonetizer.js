@@ -1,0 +1,1 @@
+// Função para adicionar o ID de afiliado (o "Monetizer")

@@ -1,0 +1,1 @@
+// Função para limpar e resolver os links (o "Cleaner")

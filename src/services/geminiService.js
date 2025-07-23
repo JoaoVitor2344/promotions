@@ -1,0 +1,1 @@
+// Lógica para chamar a API do Gemini (o "Analista")
