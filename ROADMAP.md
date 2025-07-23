@@ -1,118 +1,109 @@
-🗺️ Roadmap de Desenvolvimento: Bot de Promoções Automatizado
+# 🗺️ Roadmap de Desenvolvimento: Bot de Promoções Automatizado
+
 Este roadmap detalha as fases e os passos para a construção do Bot de Promoções, desde a fundação do projeto até as otimizações e futuras expansões.
 
-🏁 Fase 1: Fundação e Setup (Duração Estimada: 1-2 dias)
-Objetivo: Montar o esqueleto do projeto, configurar todas as ferramentas essenciais e garantir que as conexões básicas estejam funcionando.
+---
 
-Milestone 1.1: Estrutura do Projeto
+## 🏁 Fase 1: Fundação e Setup
 
-[x] Iniciar um novo projeto Node.js (npm init).
+**Duração Estimada:** 1-2 dias  
+**Objetivo:** Montar o esqueleto do projeto, configurar todas as ferramentas essenciais e garantir que as conexões básicas estejam funcionando.
 
-[x] Criar a estrutura de pastas principal conforme o documento de arquitetura.
+### Milestone 1.1: Estrutura do Projeto
 
-[x] Iniciar o repositório Git (git init) e criar o primeiro commit.
+- [x] Iniciar um novo projeto Node.js (`npm init`)
+- [x] Criar a estrutura de pastas principal conforme o documento de arquitetura
+- [x] Iniciar o repositório Git (`git init`) e criar o primeiro commit
 
-Milestone 1.2: Configuração dos Bancos de Dados
+### Milestone 1.2: Configuração dos Bancos de Dados
 
-[ ] Instalar e configurar o PostgreSQL localmente.
+- [ ] Instalar e configurar o PostgreSQL localmente
+- [ ] Instalar o Prisma (`npm install prisma --save-dev`) e inicializá-lo (`npx prisma init`)
+- [ ] Definir o modelo de dados inicial no `schema.prisma` (ex: uma tabela Promotion para guardar o histórico)
+- [ ] Executar a primeira migração para criar a tabela no banco (`npx prisma migrate dev`)
+- [ ] Instalar e configurar o Redis localmente
 
-[ ] Instalar o Prisma (npm install prisma --save-dev) e inicializá-lo (npx prisma init).
+### Milestone 1.3: Configuração do Ambiente
 
-[ ] Definir o modelo de dados inicial no schema.prisma (ex: uma tabela Promotion para guardar o histórico).
+- [ ] Instalar o dotenv (`npm install dotenv`)
+- [ ] Criar o arquivo `.env.example` com todas as variáveis necessárias
+- [ ] Criar o arquivo `.env` (e adicioná-lo ao `.gitignore`)
+- [ ] Preencher o `.env` com as credenciais dos bancos de dados e o token do bot do Telegram
 
-[ ] Executar a primeira migração para criar a tabela no banco (npx prisma migrate dev).
+### Milestone 1.4: Conexão com Telegram
 
-[ ] Instalar e configurar o Redis localmente.
+- [ ] Criar o módulo `telegramService.js`
+- [ ] Implementar uma função simples `enviarMensagemTeste()` que envia um "Olá, Mundo!" para o seu canal, para validar o token e a conexão
 
-Milestone 1.3: Configuração do Ambiente
+---
 
-[ ] Instalar o dotenv (npm install dotenv).
+## ⚙️ Fase 2: Construção do MVP - O Fluxo Central
 
-[ ] Criar o arquivo .env.example com todas as variáveis necessárias.
+**Duração Estimada:** 3-5 dias  
+**Objetivo:** Criar a primeira versão funcional do bot, capaz de extrair uma promoção e publicá-la, ainda sem a complexidade da fila de prioridade.
 
-[ ] Criar o arquivo .env (e adicioná-lo ao .gitignore).
+### Milestone 2.1: Desenvolvimento do Scraper (Vigia)
 
-[ ] Preencher o .env com as credenciais dos bancos de dados e o token do bot do Telegram.
+- [ ] Instalar o Playwright (`npm install playwright`)
+- [ ] Desenvolver a lógica no `pelandoScraper.js` para:
+  - Abrir a página do Pelando
+  - Extrair o título, preço, loja e link da primeira promoção na página
+- [ ] Criar uma função principal `buscarPromocoes()` que retorna os dados extraídos
 
-Milestone 1.4: Conexão com Telegram
+### Milestone 2.2: Implementação dos Processadores (Cleaner & Monetizer)
 
-[ ] Criar o módulo telegramService.js.
+- [ ] Criar a função `limparLink()` em `linkCleaner.js` que resolve o redirecionamento
+- [ ] Criar a função `monetizarLink()` em `affiliateMonetizer.js` que usa uma lógica if/else para adicionar o ID de afiliado correto com base na loja
 
-[ ] Implementar uma função simples enviarMensagemTeste() que envia um "Olá, Mundo!" para o seu canal, para validar o token e a conexão.
+### Milestone 2.3: Integração do Fluxo Simples
 
-⚙️ Fase 2: Construção do MVP - O Fluxo Central (Duração Estimada: 3-5 dias)
-Objetivo: Criar a primeira versão funcional do bot, capaz de extrair uma promoção e publicá-la, ainda sem a complexidade da fila de prioridade.
+- [ ] Criar um script de teste `test-flow.js` que:
+  - Chama `buscarPromocoes()`
+  - Passa o resultado para `limparLink()`
+  - Passa o resultado para `monetizarLink()`
+  - Usa o `telegramService` para enviar a promoção formatada para o canal
+- [ ] Refatorar e garantir que cada módulo funcione em conjunto
 
-Milestone 2.1: Desenvolvimento do Scraper (Vigia)
+---
 
-[ ] Instalar o Playwright (npm install playwright).
+## 🧠 Fase 3: Implementação da Inteligência e Resiliência
 
-[ ] Desenvolver a lógica no pelandoScraper.js para:
+**Duração Estimada:** 2-4 dias  
+**Objetivo:** Transformar o fluxo simples em um sistema robusto, introduzindo a fila de prioridades e a arquitetura de workers.
 
-Abrir a página do Pelando.
+### Milestone 3.1: Integração com Redis
 
-Extrair o título, preço, loja e link da primeira promoção na página.
+- [ ] Criar o `redisClient.js` para gerenciar a conexão
+- [ ] Desenvolver o `promotionQueue.js` com duas funções principais:
+  - `adicionarPromocao(promocao, prioridade)`
+  - `buscarProximaPromocao()`
 
-[ ] Criar uma função principal buscarPromocoes() que retorna os dados extraídos.
+### Milestone 3.2: Refatoração para a Arquitetura de Fila
 
-Milestone 2.2: Implementação dos Processadores (Cleaner & Monetizer)
+- [ ] Modificar o Scraper para, em vez de retornar os dados, adicioná-los à fila do Redis usando `adicionarPromocao()`
+- [ ] Criar o ponto de entrada `worker.js`, que roda em um loop contínuo, chama `buscarProximaPromocao()` e, se houver uma, executa o fluxo de limpeza, monetização e envio
+- [ ] Criar o ponto de entrada `scheduler.js`, que usa node-cron para chamar o Scraper no intervalo definido no `.env`
 
-[ ] Criar a função limparLink() em linkCleaner.js que resolve o redirecionamento.
+### Milestone 3.3: Implementação do Analisador de Prioridade
 
-[ ] Criar a função monetizarLink() em affiliateMonetizer.js que usa uma lógica if/else para adicionar o ID de afiliado correto com base na loja.
+- [ ] Criar a função `analisarPrioridade(promocao)` que implementa as regras de if/else que definimos (baseado em palavras-chave, desconto, etc.)
+- [ ] Integrar o analisador no Scraper, para que a prioridade seja calculada antes de adicionar a promoção à fila
 
-Milestone 2.3: Integração do Fluxo Simples
+---
 
-[ ] Criar um script de teste test-flow.js que:
+## 🚀 Fase 4: Otimização e Expansão
 
-Chama buscarPromocoes().
+**Duração:** Contínuo  
+**Objetivo:** Melhorar a qualidade do sistema, adicionar novas funcionalidades e garantir que ele seja fácil de manter.
 
-Passa o resultado para limparLink().
+### Milestone 4.1: Melhorias e Logs
 
-Passa o resultado para monetizarLink().
+- [ ] Implementar o salvamento de cada promoção postada no banco de dados PostgreSQL para criar um histórico
+- [ ] Adicionar um sistema de logs (ex: usando a biblioteca winston) para registrar erros e atividades importantes no banco de dados ou em arquivos
+- [ ] Refinar o scraper para ser mais resiliente a pequenas mudanças no layout do site
 
-Usa o telegramService para enviar a promoção formatada para o canal.
+### Milestone 4.2: Expansão de Funcionalidades
 
-[ ] Refatorar e garantir que cada módulo funcione em conjunto.
-
-🧠 Fase 3: Implementação da Inteligência e Resiliência (Duração Estimada: 2-4 dias)
-Objetivo: Transformar o fluxo simples em um sistema robusto, introduzindo a fila de prioridades e a arquitetura de workers.
-
-Milestone 3.1: Integração com Redis
-
-[ ] Criar o redisClient.js para gerenciar a conexão.
-
-[ ] Desenvolver o promotionQueue.js com duas funções principais: adicionarPromocao(promocao, prioridade) e buscarProximaPromocao().
-
-Milestone 3.2: Refatoração para a Arquitetura de Fila
-
-[ ] Modificar o Scraper para, em vez de retornar os dados, adicioná-los à fila do Redis usando adicionarPromocao().
-
-[ ] Criar o ponto de entrada worker.js, que roda em um loop contínuo, chama buscarProximaPromocao() e, se houver uma, executa o fluxo de limpeza, monetização e envio.
-
-[ ] Criar o ponto de entrada scheduler.js, que usa node-cron para chamar o Scraper no intervalo definido no .env.
-
-Milestone 3.3: Implementação do Analisador de Prioridade
-
-[ ] Criar a função analisarPrioridade(promocao) que implementa as regras de if/else que definimos (baseado em palavras-chave, desconto, etc.).
-
-[ ] Integrar o analisador no Scraper, para que a prioridade seja calculada antes de adicionar a promoção à fila.
-
-🚀 Fase 4: Otimização e Expansão (Contínuo)
-Objetivo: Melhorar a qualidade do sistema, adicionar novas funcionalidades e garantir que ele seja fácil de manter.
-
-Milestone 4.1: Melhorias e Logs
-
-[ ] Implementar o salvamento de cada promoção postada no banco de dados PostgreSQL para criar um histórico.
-
-[ ] Adicionar um sistema de logs (ex: usando a biblioteca winston) para registrar erros e atividades importantes no banco de dados ou em arquivos.
-
-[ ] Refinar o scraper para ser mais resiliente a pequenas mudanças no layout do site.
-
-Milestone 4.2: Expansão de Funcionalidades
-
-[ ] (Opcional) Integrar o geminiService.js para usar a IA na análise de prioridade.
-
-[ ] Desenvolver um novo scraper para uma segunda fonte (ex: promobitScraper.js).
-
-[ ] Criar um painel de controle simples (dashboard) para visualizar estatísticas básicas a partir dos dados do PostgreSQL.
+- [ ] (Opcional) Integrar o `geminiService.js` para usar a IA na análise de prioridade
+- [ ] Desenvolver um novo scraper para uma segunda fonte (ex: `promobitScraper.js`)
+- [ ] Criar um painel de controle simples (dashboard) para visualizar estatísticas básicas a partir dos dados do PostgreSQL
