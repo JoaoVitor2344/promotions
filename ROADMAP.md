@@ -17,10 +17,10 @@ Este roadmap detalha as fases e os passos para a construção do Bot de Promoç�
 
 ### Milestone 1.2: Configuração dos Bancos de Dados
 
-- [ ] Instalar e configurar o PostgreSQL localmente
-- [ ] Instalar o Prisma (`npm install prisma --save-dev`) e inicializá-lo (`npx prisma init`)
-- [ ] Definir o modelo de dados inicial no `schema.prisma` (ex: uma tabela Promotion para guardar o histórico)
-- [ ] Executar a primeira migração para criar a tabela no banco (`npx prisma migrate dev`)
+- [x] Instalar e configurar o PostgreSQL localmente
+- [x] Instalar o Prisma (`npm install prisma --save-dev`) e inicializá-lo (`npx prisma init`)
+- [x] Definir o modelo de dados inicial no `schema.prisma` (ex: uma tabela Promotion para guardar o histórico)
+- [x] Executar a primeira migração para criar a tabela no banco (`npx prisma migrate dev`)
 - [ ] Instalar e configurar o Redis localmente
 
 ### Milestone 1.3: Configuração do Ambiente
