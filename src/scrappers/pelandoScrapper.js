@@ -1,0 +1,1 @@
+// A implementeção especófica do scraper para o site Pelando

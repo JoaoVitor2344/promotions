@@ -1,0 +1,1 @@
+// Lógica para adicionar e processar itens na gile do Redis

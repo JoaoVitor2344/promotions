@@ -1,0 +1,1 @@
+// O Worker principal que executa o "Cleaner" e o "Monetizer"
