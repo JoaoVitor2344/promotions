@@ -1,10 +1,4 @@
-# 🗺️ Roadmap de Desenvolvimento: Bot de Promoções Automatizado
-
-Este roadmap detalha as fases e os passos para a construção do Bot de Promoções, desde a fundação do projeto até as otimizações e futuras expansões.
-
----
-
-## 🏁 Fase 1: Fundação e Setup
+## Fase 1: Fundação e Setup
 
 **Duração Estimada:** 1-2 dias  
 **Objetivo:** Montar o esqueleto do projeto, configurar todas as ferramentas essenciais e garantir que as conexões básicas estejam funcionando.
@@ -25,30 +19,30 @@ Este roadmap detalha as fases e os passos para a construção do Bot de Promoç�
 
 ### Milestone 1.3: Configuração do Ambiente
 
-- [ ] Instalar o dotenv (`npm install dotenv`)
-- [ ] Criar o arquivo `.env.example` com todas as variáveis necessárias
-- [ ] Criar o arquivo `.env` (e adicioná-lo ao `.gitignore`)
-- [ ] Preencher o `.env` com as credenciais dos bancos de dados e o token do bot do Telegram
+- [x] Instalar o dotenv (`npm install dotenv`)
+- [x] Criar o arquivo `.env.example` com todas as variáveis necessárias
+- [x] Criar o arquivo `.env` (e adicioná-lo ao `.gitignore`)
+- [x] Preencher o `.env` com as credenciais dos bancos de dados e o token do bot do Telegram
 
 ### Milestone 1.4: Conexão com Telegram
 
-- [ ] Criar o módulo `telegramService.js`
-- [ ] Implementar uma função simples `enviarMensagemTeste()` que envia um "Olá, Mundo!" para o seu canal, para validar o token e a conexão
+- [x] Criar o módulo `telegramService.js`
+- [x] Implementar uma função simples `enviarMensagemTeste()` que envia um "Olá, Mundo!" para o seu canal, para validar o token e a conexão
 
 ---
 
-## ⚙️ Fase 2: Construção do MVP - O Fluxo Central
+## Fase 2: Construção do MVP - O Fluxo Central
 
 **Duração Estimada:** 3-5 dias  
 **Objetivo:** Criar a primeira versão funcional do bot, capaz de extrair uma promoção e publicá-la, ainda sem a complexidade da fila de prioridade.
 
 ### Milestone 2.1: Desenvolvimento do Scraper (Vigia)
 
-- [ ] Instalar o Playwright (`npm install playwright`)
-- [ ] Desenvolver a lógica no `pelandoScraper.js` para:
+- [x] Instalar o Playwright (`npm install playwright`)
+- [x] Desenvolver a lógica no `pelandoScrapper.js` para:
   - Abrir a página do Pelando
   - Extrair o título, preço, loja e link da primeira promoção na página
-- [ ] Criar uma função principal `buscarPromocoes()` que retorna os dados extraídos
+- [x] Criar uma função principal `searchPromotions()` que retorna os dados extraídos
 
 ### Milestone 2.2: Implementação dos Processadores (Cleaner & Monetizer)
 
@@ -58,7 +52,7 @@ Este roadmap detalha as fases e os passos para a construção do Bot de Promoç�
 ### Milestone 2.3: Integração do Fluxo Simples
 
 - [ ] Criar um script de teste `test-flow.js` que:
-  - Chama `buscarPromocoes()`
+  - Chama `searchPromotions()`
   - Passa o resultado para `limparLink()`
   - Passa o resultado para `monetizarLink()`
   - Usa o `telegramService` para enviar a promoção formatada para o canal
@@ -66,7 +60,7 @@ Este roadmap detalha as fases e os passos para a construção do Bot de Promoç�
 
 ---
 
-## 🧠 Fase 3: Implementação da Inteligência e Resiliência
+## Fase 3: Implementação da Inteligência e Resiliência
 
 **Duração Estimada:** 2-4 dias  
 **Objetivo:** Transformar o fluxo simples em um sistema robusto, introduzindo a fila de prioridades e a arquitetura de workers.

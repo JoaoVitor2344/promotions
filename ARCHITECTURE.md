@@ -20,7 +20,7 @@
 │ │ └── telegramService.js # Lógica para enviar mensagens para o Telegram (o "Carteiro")
 │ │
 │ ├── 📁 scrapers/
-│ │ └── pelandoScraper.js # A implementação específica do scraper para o site Pelando
+│ │ └── pelandoScrapper.js # A implementação específica do scraper para o site Pelando
 │ │
 │ ├── 📁 workers/
 │ │ └── promotionWorker.js # O Worker principal que executa o Cleaner e o Monetizer
