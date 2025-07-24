@@ -46,8 +46,8 @@
 
 ### Milestone 2.2: Implementação dos Processadores (Cleaner & Monetizer)
 
-- [ ] Criar a função `limparLink()` em `linkCleaner.js` que resolve o redirecionamento
-- [ ] Criar a função `monetizarLink()` em `affiliateMonetizer.js` que usa uma lógica if/else para adicionar o ID de afiliado correto com base na loja
+- [x] Criar a função `limparLink()` em `linkCleaner.js` que resolve o redirecionamento
+- [x] Criar a função `monetizarLink()` em `affiliateMonetizer.js` que usa uma lógica if/else para adicionar o ID de afiliado correto com base na loja
 
 ### Milestone 2.3: Integração do Fluxo Simples
 
