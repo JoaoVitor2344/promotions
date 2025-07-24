@@ -15,7 +15,9 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "setup": "node setup.js",
+    "test:flow": "node test-flow.js",
+    "test:format": "node test-flow.js --format-only"
   },
   "keywords": [],
   "devDependencies": {
