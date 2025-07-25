@@ -1,6 +1,5 @@
 ## Fase 1: Fundação e Setup
 
-**Duração Estimada:** 1-2 dias  
 **Objetivo:** Montar o esqueleto do projeto, configurar todas as ferramentas essenciais e garantir que as conexões básicas estejam funcionando.
 
 ### Milestone 1.1: Estrutura do Projeto
@@ -33,7 +32,6 @@
 
 ## Fase 2: Construção do MVP - O Fluxo Central
 
-**Duração Estimada:** 3-5 dias  
 **Objetivo:** Criar a primeira versão funcional do bot, capaz de extrair uma promoção e publicá-la, ainda sem a complexidade da fila de prioridade.
 
 ### Milestone 2.1: Desenvolvimento do Scraper (Vigia)
@@ -51,18 +49,17 @@
 
 ### Milestone 2.3: Integração do Fluxo Simples
 
-- [ ] Criar um script de teste `test-flow.js` que:
+- [x] Criar um script de teste `test-flow.js` que:
   - Chama `searchPromotions()`
   - Passa o resultado para `limparLink()`
   - Passa o resultado para `monetizarLink()`
   - Usa o `telegramService` para enviar a promoção formatada para o canal
-- [ ] Refatorar e garantir que cada módulo funcione em conjunto
+- [x] Refatorar e garantir que cada módulo funcione em conjunto
 
 ---
 
 ## Fase 3: Implementação da Inteligência e Resiliência
 
-**Duração Estimada:** 2-4 dias  
 **Objetivo:** Transformar o fluxo simples em um sistema robusto, introduzindo a fila de prioridades e a arquitetura de workers.
 
 ### Milestone 3.1: Integração com Redis
@@ -85,7 +82,7 @@
 
 ---
 
-## 🚀 Fase 4: Otimização e Expansão
+## Fase 4: Otimização e Expansão
 
 **Duração:** Contínuo  
 **Objetivo:** Melhorar a qualidade do sistema, adicionar novas funcionalidades e garantir que ele seja fácil de manter.

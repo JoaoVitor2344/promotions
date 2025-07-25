@@ -1,26 +1,22 @@
 require("dotenv").config();
 
-const { searchPromotions } = require("./src/scrappers/pelandoScrapper");
+const { searchFirstPromotion } = require("./src/scrappers/pelandoScrapper");
 const { limparLink } = require("./src/utils/linkCleaner");
 const { monetizarLink } = require("./src/utils/affiliateMonetizer");
 const TelegramService = require("./src/services/telegramService");
 
 const DEBUG_MODE = process.env.DEBUG_MODE === "true";
 
-// Função auxiliar para logs condicionais
 function debugLog(message, ...args) {
   if (DEBUG_MODE) {
     console.log(message, ...args);
   }
 }
 
-// Script de teste que integra todo o fluxo do bot
-// Executa sequencialmente: busca promoções, limpa link, monetiza e envia para Telegram
 async function testCompleteFlow() {
   debugLog("Iniciando teste do fluxo completo...\n");
 
   try {
-    // Verificar se as variáveis de ambiente necessárias estão configuradas
     if (!process.env.TELEGRAM_BOT_TOKEN) {
       throw new Error("TELEGRAM_BOT_TOKEN não configurado no .env");
     }
@@ -28,10 +24,8 @@ async function testCompleteFlow() {
       throw new Error("TELEGRAM_CHANNEL_ID não configurado no .env");
     }
 
-    // 1. Buscar promoções no Pelando
     debugLog("Passo 1: Buscando promoções no Pelando...");
-    const maxRetries = parseInt(process.env.SCRAPER_MAX_RETRIES) || 3;
-    const promotion = await searchPromotions(maxRetries, DEBUG_MODE);
+    const promotion = await searchFirstPromotion();
 
     if (!promotion || !promotion.title) {
       debugLog("Nenhuma promoção encontrada. Encerrando teste.");
@@ -44,7 +38,6 @@ async function testCompleteFlow() {
     debugLog(`   Loja: ${promotion.store}`);
     debugLog(`   Link original: ${promotion.link}\n`);
 
-    // 2. Limpar o link
     debugLog("Passo 2: Limpando o link...");
     let cleanedLink = promotion.link;
 
@@ -59,12 +52,10 @@ async function testCompleteFlow() {
       debugLog("Nenhum link encontrado na promoção\n");
     }
 
-    // 3. Monetizar o link
     debugLog("Passo 3: Monetizando o link...");
     const monetizedLink = monetizarLink(cleanedLink);
     debugLog(`Link monetizado: ${monetizedLink}\n`);
 
-    // 4. Formatar mensagem para o Telegram
     debugLog("Passo 4: Formatando mensagem...");
     const message = formatTelegramMessage(promotion, monetizedLink);
     debugLog("Mensagem formatada:");
@@ -72,7 +63,6 @@ async function testCompleteFlow() {
     debugLog(message);
     debugLog("---END MESSAGE---\n");
 
-    // 5. Enviar para o Telegram
     debugLog("Passo 5: Enviando para o Telegram...");
     const telegramService = new TelegramService(process.env.TELEGRAM_BOT_TOKEN);
     const channelId = process.env.TELEGRAM_CHANNEL_ID;
@@ -92,8 +82,6 @@ async function testCompleteFlow() {
   }
 }
 
-// Formata a promoção em uma mensagem para o Telegram
-// Recebe os dados da promoção e o link monetizado, retorna mensagem formatada
 function formatTelegramMessage(promotion, monetizedLink) {
   const priceText = promotion.price
     ? `Preço: ${promotion.price}`
@@ -114,7 +102,6 @@ Ver Oferta: ${monetizedLink}
 #promoção #oferta #desconto`;
 }
 
-// Função para testar apenas a formatação da mensagem sem fazer scraping
 async function testMessageFormatting() {
   debugLog("Testando apenas a formatação da mensagem...\n");
 
@@ -134,7 +121,6 @@ async function testMessageFormatting() {
   debugLog("---END MESSAGE---");
 }
 
-// Verificar argumentos da linha de comando e executar função apropriada
 const args = process.argv.slice(2);
 
 if (args.includes("--format-only")) {

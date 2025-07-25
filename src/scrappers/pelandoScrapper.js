@@ -1,193 +1,109 @@
-require("dotenv").config();
-
 const { BaseScrapper } = require("./baseScrapper");
 
-/**
- * Scrapper específico para o site Pelando
- * Herda funcionalidades comuns do BaseScrapper
- */
 class PelandoScrapper extends BaseScrapper {
   constructor(config = {}) {
     super(config);
-    this.baseUrl = process.env.PELANDO_BASE_URL
-      ? process.env.PELANDO_BASE_URL
-      : "https://www.pelando.com.br";
     this.url = process.env.PELANDO_URL;
-    this.selectors = {
-      dealCard: process.env.PELANDO_DEAL_CARD_SELECTOR,
-      titleContainer: process.env.PELANDO_TITLE_CONTAINER_SELECTOR,
-      title: process.env.PELANDO_TITLE_SELECTOR,
-      contentContainer: process.env.PELANDO_CONTENT_CONTAINER_SELECTOR,
-      price: process.env.PELANDO_PRICE_SELECTOR,
-      store: process.env.PELANDO_STORE_SELECTOR,
-    };
+    // Environment-driven selectors
+    this.cardSelector = process.env.PELANDO_DEAL_CARD_SELECTOR;
+    this.storeSelector = process.env.PELANDO_STORE_SELECTOR;
+    this.titleSelector = process.env.PELANDO_TITLE_SELECTOR;
+    this.priceSelector = process.env.PELANDO_PRICE_SELECTOR;
   }
 
-  /**
-   * Implementação específica do scraping para o Pelando
-   */
-  async searchPromotions(isTest = false) {
-    const log = this._createLogger(isTest);
-    const logError = this._createErrorLogger(isTest);
+  async init() {
+    this.browser = await this.createBrowser();
+    const context = await this.createContext(this.browser);
+    this.page = await context.newPage();
+  }
 
-    const browser = await this.createBrowser();
-    const context = await this.createContext(browser);
-    const page = await context.newPage();
+  async close() {
+    if (this.browser) {
+      await this.browser.close();
+    }
+  }
+
+  async extractPromotionData(card) {
+    try {
+      const storeNameElement = await card.$(this.storeSelector);
+      const titleElement = await card.$(this.titleSelector);
+      const priceElement = await card.$(this.priceSelector);
+
+      const storeName = storeNameElement
+        ? (await storeNameElement.innerText()).trim().toLowerCase()
+        : null;
+
+      const title = titleElement
+        ? (await titleElement.innerText()).trim()
+        : "Título não encontrado";
+      const link = titleElement
+        ? await titleElement.getAttribute("href")
+        : "Link não encontrado";
+      const price = priceElement
+        ? (await priceElement.innerText()).trim()
+        : "Preço não encontrado";
+
+      if (title !== "Título não encontrado" && link !== "Link não encontrado") {
+        return { title, price, link, store: storeName };
+      }
+
+      return null;
+    } catch (error) {
+      console.error(
+        "Erro ao extrair dados de um card individual:",
+        error.message
+      );
+      return null;
+    }
+  }
+
+  async searchPromotions() {
+    await this.init();
 
     try {
-      log("Navegando para o Pelando...");
-      await this.navigateToPage(page, this.url);
+      await this.page.goto(this.url, { waitUntil: "domcontentloaded" });
+      await this.page.waitForSelector(this.cardSelector, { timeout: 20000 });
 
-      log("Página carregada, aguardando estabilização...");
-      await this.debugPageContent(page, isTest);
+      const cards = await this.page.$$(this.cardSelector);
+      const rawPromotions = [];
 
-      try {
-        log(`Aguardando por cards de promoção...`);
-        await this.waitForSelector(page, this.selectors.dealCard);
-        log(`✓ Cards de promoção encontrados!`);
-      } catch (error) {
-        log(`✗ Cards de promoção não encontrados`);
-        await this.debugPageContent(page, isTest);
-        throw new Error(
-          "Não foi possível encontrar cards de promoção na página"
-        );
+      for (const card of cards) {
+        const promotionData = await this.extractPromotionData(card);
+        if (promotionData) {
+          rawPromotions.push(promotionData);
+        }
       }
 
-      log("Extraindo dados da primeira promoção...");
-      const promotion = await page.evaluate(
-        (params) => {
-          const { isTest, selectors, baseUrl } = params;
-          const log = (message) => {
-            if (isTest) {
-              console.log(message);
-            }
-          };
-
-          // Variáveis com as classes específicas vindas do env
-          const DEAL_CARD_SELECTOR = selectors.dealCard;
-          const TITLE_CONTAINER_SELECTOR = selectors.titleContainer;
-          const TITLE_SELECTOR = selectors.title;
-          const CONTENT_CONTAINER_SELECTOR = selectors.contentContainer;
-          const PRICE_SELECTOR = selectors.price;
-          const STORE_SELECTOR = selectors.store;
-
-          const firstItem = document.querySelector(DEAL_CARD_SELECTOR);
-
-          if (!firstItem) {
-            log("Nenhum card de promoção encontrado");
-            return null;
-          }
-
-          log("Card de promoção encontrado");
-
-          let title = "";
-          const titleContainer = firstItem.querySelector(
-            TITLE_CONTAINER_SELECTOR
-          );
-          if (titleContainer) {
-            const titleElement = titleContainer.querySelector(TITLE_SELECTOR);
-            if (titleElement) {
-              title = titleElement.textContent
-                ? titleElement.textContent.trim()
-                : "";
-            }
-          }
-
-          let price = "";
-          let store = "";
-          const contentContainer = firstItem.querySelector(
-            CONTENT_CONTAINER_SELECTOR
-          );
-          if (contentContainer) {
-            const priceElement = contentContainer.querySelector(PRICE_SELECTOR);
-            if (priceElement) {
-              price = priceElement.textContent
-                ? priceElement.textContent.trim()
-                : "";
-            }
-
-            const storeElement = contentContainer.querySelector(STORE_SELECTOR);
-            if (storeElement) {
-              store = storeElement.textContent
-                ? storeElement.textContent.trim()
-                : "";
-            }
-          }
-
-          let link = "";
-          const linkElement = firstItem.querySelector("a[href]");
-          if (linkElement) {
-            link = linkElement.href
-              ? linkElement.href
-              : linkElement.getAttribute("href")
-              ? linkElement.getAttribute("href")
-              : "";
-          }
-
-          const finalLink = link.startsWith("http")
-            ? link
-            : link
-            ? `${baseUrl}${link}`
-            : "";
-
-          return {
-            title: title,
-            price: price,
-            store: store,
-            link: finalLink,
-            debug: {
-              foundElements: {
-                firstItem: !!firstItem,
-                titleContainer: !!titleContainer,
-                contentContainer: !!contentContainer,
-                titleFound: !!title,
-                priceFound: !!price,
-                storeFound: !!store,
-                linkFound: !!link,
-              },
-              selectors: {
-                dealCard: DEAL_CARD_SELECTOR,
-                titleContainer: TITLE_CONTAINER_SELECTOR,
-                title: TITLE_SELECTOR,
-                contentContainer: CONTENT_CONTAINER_SELECTOR,
-                price: PRICE_SELECTOR,
-                store: STORE_SELECTOR,
-              },
-              itemHTML: firstItem
-                ? firstItem.outerHTML.substring(0, 200) + "..."
-                : "",
-            },
-          };
-        },
-        {
-          isTest,
-          selectors: this.selectors,
-          baseUrl: this.baseUrl,
-        }
+      const promotions = rawPromotions.filter((promo) =>
+        this.isStoreAllowed(promo.store)
       );
 
-      if (isTest) {
-        console.log("Promoção encontrada:", promotion);
-      }
-      return promotion;
+      return promotions;
     } catch (error) {
-      logError("Erro ao buscar promocoes:", error);
-      await this.captureErrorScreenshot(page, isTest);
-      throw error;
+      console.error(
+        "Ocorreu um erro geral no scraper do Pelando:",
+        error.message
+      );
+      await this.page.screenshot({ path: "error_screenshot.png" });
+      return [];
     } finally {
-      await browser.close();
+      await this.close();
     }
   }
 }
 
-// Para manter compatibilidade com o código existente
-// Função wrapper que usa a nova classe
-async function searchPromotions(maxRetries, isTest = false) {
-  const scrapper = new PelandoScrapper({ maxRetries });
-  return await scrapper.searchPromotionsWithRetry(isTest);
+async function searchAllPromotions() {
+  const scrapper = new PelandoScrapper();
+  return await scrapper.searchPromotions();
+}
+
+async function searchFirstPromotion() {
+  const scrapper = new PelandoScrapper();
+  const allPromotions = await scrapper.searchPromotions();
+  return allPromotions.length > 0 ? allPromotions[0] : null;
 }
 
 module.exports = {
-  searchPromotions,
-  PelandoScrapper,
+  searchAllPromotions,
+  searchFirstPromotion,
 };
