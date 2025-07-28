@@ -1,19 +1,55 @@
 version: 2.1
 
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:20.11.1
+
 jobs:
   deploy:
-    docker:
-      - image: cimg/base:current
+    executor: node-executor
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "your-ssh-key-fingerprint"
+      - checkout
       - run:
-          name: Deploy to Server
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Plan deployment
+          # command: echo "Plan deployment step" # ADAPTE
+      - run:
+          name: Perform deployment
           command: |
-            ssh user@your-server-ip 'bash -s' < deploy_script.sh
+            rsync -avz --delete ./ $USER@$SERVER:$DEPLOY_PATH
+      - run:
+          name: Update planned deployment to running
+          # command: echo "Update status to running" # ADAPTE
+      - run:
+          name: Validate deployment
+          # command: npm test # ADAPTE
+      - run:
+          name: Update planned deployment to SUCCESS
+          command: echo "Update status to SUCCESS"
+          when: on_success
+      - run:
+          name: Update planned deployment to FAILED
+          command: |
+            if [ -f failure_reason.env ]; then
+              source failure_reason.env
+            fi
+            echo "Update status to FAILED: $FAILURE_REASON"
+          when: on_fail
+  cancel-deploy:
+    executor: node-executor
+    steps:
+      - run:
+          name: Update planned release to CANCELED
+          command: echo "Update status to CANCELED"
 
 workflows:
   deploy-workflow:
     jobs:
       - deploy
+      - cancel-deploy:
+          requires:
+            - deploy:
+                - canceled
