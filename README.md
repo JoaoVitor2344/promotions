@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/JoaoVitor2344/promotions.svg?style=svg)](https://circleci.com/gh/JoaoVitor2344/promotions)
+
 # 🤖 Bot de Promoções Automatizado para Telegram
 
 ## 📋 Visão Geral

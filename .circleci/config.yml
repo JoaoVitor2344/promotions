@@ -15,17 +15,17 @@ jobs:
           command: npm install
       - run:
           name: Plan deployment
-          # command: echo "Plan deployment step" # ADAPTE
+          # command: echo "Plan deployment step"
       - run:
           name: Perform deployment
           command: |
             rsync -avz --delete ./ $USER@$SERVER:$DEPLOY_PATH
       - run:
           name: Update planned deployment to running
-          # command: echo "Update status to running" # ADAPTE
+          # command: echo "Update status to running"
       - run:
           name: Validate deployment
-          # command: npm test # ADAPTE
+          # command: npm test
       - run:
           name: Update planned deployment to SUCCESS
           command: echo "Update status to SUCCESS"
@@ -37,6 +37,11 @@ jobs:
               source failure_reason.env
             fi
             echo "Update status to FAILED: $FAILURE_REASON"
+          when: on_fail
+      - run:
+          name: Update README on failure
+          command: |
+            echo "## Última execução: FAILED em $(date)" >> README.md
           when: on_fail
   cancel-deploy:
     executor: node-executor
